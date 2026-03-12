@@ -2,6 +2,10 @@ name: Verify Human Identity
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
   verify:
@@ -9,17 +13,20 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install ClawHub
-        run: npx clawhub@latest install verified-agent-identity --force
+      - name: Install ClawHub CLI
+        run: npm install -g clawhub
 
-      - name: Install Dependencies
+      - name: Install Verified Agent Skill
+        run: clawhub install verified-agent-identity --force
+
+      - name: Install Script Dependencies
         run: |
           cd scripts
           npm install
@@ -28,4 +35,8 @@ jobs:
         run: node scripts/createNewEthereumIdentity.js
 
       - name: Link Human To Agent
-        run: node scripts/manualLinkHumanToAgent.js --challenge '{"name":"mommo","description":"mommo AI Agent"}'
+        run: |
+          node scripts/manualLinkHumanToAgent.js --challenge '{"name":"mommo","description":"mommo AI Agent"}'
+
+      - name: Done
+        run: echo "Agent verification workflow finished"
