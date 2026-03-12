@@ -17,7 +17,7 @@ jobs:
           node-version: 20
 
       - name: Install ClawHub
-        run: npx clawhub@latest install verified-agent-identity
+        run: npx clawhub@latest install verified-agent-identity --force
 
       - name: Install Dependencies
         run: |
